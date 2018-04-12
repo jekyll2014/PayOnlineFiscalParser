@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -43,7 +42,7 @@ namespace WindowsFormsApplication1
             ResultDatabase.Columns.Add("Type");
             ResultDatabase.Columns.Add("Raw");
             ParseEscPos.commandDataBase = CommandDatabase;
-            ParseEscPos.sourceData = textBox_code.Text;
+            ParseEscPos.sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
             for (int i = 0; i < dataGridView_commands.Columns.Count; i++) dataGridView_commands.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
             for (int i = 0; i < dataGridView_result.Columns.Count; i++) dataGridView_result.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
 
@@ -142,7 +141,7 @@ namespace WindowsFormsApplication1
                 textBox_code.SelectionStart = textBox_code.SelectionStart + textBox_code.SelectionLength;
             }*/
             label_currentPosition.Text = textBox_code.SelectionStart.ToString() + "/" + textBox_code.TextLength.ToString();
-            if (ParseEscPos.FindCommand(textBox_code.SelectionStart))
+            if (ParseEscPos.FindCommand(textBox_code.SelectionStart / 3))
             {
                 ParseEscPos.FindCommandParameter();
                 if (sender != button_auto)  //update interface only if it's no auto-parsing mode
@@ -158,7 +157,7 @@ namespace WindowsFormsApplication1
                         DataRow row = ResultDatabase.NewRow();
                         row[ResultColumns.Value] = ParseEscPos.commandParamValue[i];
                         row[ResultColumns.Type] = ParseEscPos.commandParamType[i];
-                        row[ResultColumns.Raw] = ParseEscPos.commandParamRAWValue[i];
+                        row[ResultColumns.Raw] = Accessory.ConvertByteArrayToHex(ParseEscPos.commandParamRAWValue[i].ToArray());
                         row[ResultColumns.Description] = ParseEscPos.commandParamDesc[i];
                         if (ParseEscPos.commandParamType[i].ToLower() == ParseEscPos.DataTypes.Error) row[ResultColumns.Description] += ": " + GetErrorDesc(int.Parse(ParseEscPos.commandParamValue[i]));
                         ResultDatabase.Rows.Add(row);
@@ -177,13 +176,13 @@ namespace WindowsFormsApplication1
                         }
                     }
                 }
-                if (ParseEscPos.itIsReply && textBox_code.Text.Substring(textBox_code.SelectionStart + ParseEscPos.commandBlockLength, ParseEscPos.ackSign.Length) == ParseEscPos.ackSign) textBox_code.Select(textBox_code.SelectionStart, ParseEscPos.commandBlockLength + ParseEscPos.ackSign.Length);
-                else textBox_code.Select(textBox_code.SelectionStart, ParseEscPos.commandBlockLength);
+                if (ParseEscPos.itIsReply && textBox_code.Text.Substring(textBox_code.SelectionStart + (ParseEscPos.commandBlockLength + 1) * 3, 3) == Accessory.ConvertByteToHex(ParseEscPos.ackSign)) textBox_code.Select(textBox_code.SelectionStart, (ParseEscPos.commandBlockLength + 2) * 3);
+                else textBox_code.Select(textBox_code.SelectionStart, (ParseEscPos.commandBlockLength + 1) * 3);
             }
             else  //no command found. consider it's a string
             {
                 int i = 3;
-                while (!ParseEscPos.FindCommand(textBox_code.SelectionStart + i) && textBox_code.SelectionStart + i < textBox_code.TextLength) //looking for a non-parseable part end
+                while (!ParseEscPos.FindCommand((textBox_code.SelectionStart + i) / 3) && textBox_code.SelectionStart + i < textBox_code.TextLength) //looking for a non-parseable part end
                 {
                     i += 3;
                 }
@@ -193,9 +192,9 @@ namespace WindowsFormsApplication1
                 {
                     //textBox_command.Text += "";
                     //textBox_commandDesc.Text = "\"" + (String)textBox_code.SelectedText + "\"";
-                    if (textBox_code.SelectedText == ParseEscPos.ackSign) textBox_command.Text = "ACK";
-                    else if (textBox_code.SelectedText == ParseEscPos.nakSign) textBox_command.Text = "NAK";
-                    else if (textBox_code.SelectedText == ParseEscPos.enqSign + ParseEscPos.ackSign) textBox_command.Text = "BUSY";
+                    if (textBox_code.SelectedText == Accessory.ConvertByteToHex(ParseEscPos.ackSign)) textBox_command.Text = "ACK";
+                    else if (textBox_code.SelectedText == Accessory.ConvertByteToHex(ParseEscPos.nakSign)) textBox_command.Text = "NAK";
+                    else if (textBox_code.SelectedText == Accessory.ConvertByteToHex(ParseEscPos.enqSign) + Accessory.ConvertByteToHex(ParseEscPos.ackSign)) textBox_command.Text = "BUSY";
                     else textBox_command.Text = "\"" + textBox_code.SelectedText + "\"";
                     dataGridView_commands.CurrentCell = dataGridView_commands.Rows[0].Cells[0];
                     if (Accessory.PrintableHex(textBox_code.SelectedText)) textBox_commandDesc.Text = "\"" + Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage).GetString(Accessory.ConvertHexToByteArray(textBox_code.SelectedText)) + "\"";
@@ -224,14 +223,14 @@ namespace WindowsFormsApplication1
                 Button_find_Click(button_auto, EventArgs.Empty);
                 if (ParseEscPos.commandName != "")
                 {
-                    ParseEscPos.FindCommandParameter();  //?????????????
+                    //ParseEscPos.FindCommandParameter();  //?????????????
                     //Save ASCII string if collected till now
                     if (asciiString.Length != 0)
                     {
                         saveStr.Append("#" + ParseEscPos.commandFramePosition.ToString() + " RAW data [" + asciiString.ToString() + "]\r\n");
-                        if (asciiString.ToString() == ParseEscPos.ackSign) saveStr.Append("ACK\r\n");
-                        else if (asciiString.ToString() == ParseEscPos.nakSign) saveStr.Append("NAK\r\n");
-                        else if (asciiString.ToString() == ParseEscPos.enqSign + ParseEscPos.ackSign) saveStr.Append("BUSY\r\n");
+                        if (asciiString.ToString() == Accessory.ConvertByteToHex(ParseEscPos.ackSign)) saveStr.Append("ACK\r\n");
+                        else if (asciiString.ToString() == Accessory.ConvertByteToHex(ParseEscPos.nakSign)) saveStr.Append("NAK\r\n");
+                        else if (asciiString.ToString() == Accessory.ConvertByteToHex(ParseEscPos.enqSign) + Accessory.ConvertByteToHex(ParseEscPos.ackSign)) saveStr.Append("BUSY\r\n");
                         else if (Accessory.PrintableHex(asciiString.ToString())) saveStr.Append("ASCII string: \"" + Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage).GetString(Accessory.ConvertHexToByteArray(asciiString.ToString())) + "\"\r\n");
                         saveStr.Append("\r\n");
                         File.AppendAllText(SourceFile + ".list", asciiString.ToString() + "\r\n", Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage));
@@ -253,9 +252,9 @@ namespace WindowsFormsApplication1
                         saveStr.Append("\tParameter = ");
                         saveStr.Append("\"" + ParseEscPos.commandParamValue[i] + "\"");
 
-                        saveStr.Append("[" + ParseEscPos.commandParamType[i] + "] - \"" + ParseEscPos.commandParamDesc[i].TrimStart('\r').TrimStart('\n').TrimEnd('\n').TrimEnd('\r').Replace("\n","\n\t\t\t\t"));
+                        saveStr.Append("[" + ParseEscPos.commandParamType[i] + "] - \"" + ParseEscPos.commandParamDesc[i].TrimStart('\r').TrimStart('\n').TrimEnd('\n').TrimEnd('\r').Replace("\n", "\n\t\t\t\t"));
                         if (ParseEscPos.commandParamType[i].ToLower() == ParseEscPos.DataTypes.Error) saveStr.Append(": " + GetErrorDesc(int.Parse(ParseEscPos.commandParamValue[i])));
-                        saveStr.Append("\", RAW [" + ParseEscPos.commandParamRAWValue[i] + "]\r\n");
+                        saveStr.Append("\", RAW [" + Accessory.ConvertByteArrayToHex(ParseEscPos.commandParamRAWValue[i].ToArray()) + "]\r\n");
 
                         if (ParseEscPos.commandParamType[i].ToLower() == ParseEscPos.DataTypes.Bitfield)
                         {
@@ -283,9 +282,9 @@ namespace WindowsFormsApplication1
             {
                 StringBuilder saveStr = new StringBuilder();
                 saveStr.Append("#" + ParseEscPos.commandFramePosition.ToString() + " RAW data [" + asciiString.ToString() + "]\r\n");
-                if (asciiString.ToString() == ParseEscPos.ackSign) saveStr.Append("ACK");
-                if (asciiString.ToString() == ParseEscPos.nakSign) saveStr.Append("NAK");
-                if (asciiString.ToString() == ParseEscPos.enqSign + ParseEscPos.ackSign) saveStr.Append("BUSY");
+                if (asciiString.ToString() == Accessory.ConvertByteToHex(ParseEscPos.ackSign)) saveStr.Append("ACK");
+                if (asciiString.ToString() == Accessory.ConvertByteToHex(ParseEscPos.nakSign)) saveStr.Append("NAK");
+                if (asciiString.ToString() == Accessory.ConvertByteToHex(ParseEscPos.enqSign) + Accessory.ConvertByteToHex(ParseEscPos.ackSign)) saveStr.Append("BUSY");
                 else if (Accessory.PrintableHex(asciiString.ToString())) saveStr.Append("ASCII string: \"" + Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage).GetString(Accessory.ConvertHexToByteArray(asciiString.ToString())) + "\"\r\n");
                 saveStr.Append("\r\n");
                 File.AppendAllText(SourceFile + ".list", asciiString.ToString() + "\r\n", Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage));
@@ -300,7 +299,7 @@ namespace WindowsFormsApplication1
             {
                 textBox_code.Text = Accessory.CheckHexString(textBox_code.Text);
                 //ParseEscPos.Init(textBox_code.Text, CommandDatabase);
-                ParseEscPos.sourceData = textBox_code.Text;
+                ParseEscPos.sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
             }
         }
 
@@ -435,7 +434,7 @@ namespace WindowsFormsApplication1
                 textBox_code.Text = Accessory.ConvertByteArrayToHex(sourceData.ToArray());
                 textBox_code.Select(0, 0);
                 //ParseEscPos.Init(textBox_code.Text, CommandDatabase);
-                ParseEscPos.sourceData = textBox_code.Text;
+                ParseEscPos.sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
             }
             else if (openFileDialog.Title == "Open HEX file") //hex text read
             {
@@ -453,7 +452,7 @@ namespace WindowsFormsApplication1
                 sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
                 textBox_code.Select(0, 0);
                 //ParseEscPos.Init(textBox_code.Text, CommandDatabase);
-                ParseEscPos.sourceData = textBox_code.Text;
+                ParseEscPos.sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
             }
             else if (openFileDialog.Title == "Open command CSV database") //hex text read
             {
@@ -499,16 +498,6 @@ namespace WindowsFormsApplication1
                 if (int.Parse(ErrorsDatabase.Rows[i][0].ToString()) == errNum) return ErrorsDatabase.Rows[i][1].ToString();
             }
             return "!!!Unknown error!!!";
-        }
-
-        public static bool PrintableHex(string str)
-        {
-            for (int i = 0; i < str.Length; i += 3)
-            {
-                if (!byte.TryParse(str.Substring(i, 3), NumberStyles.HexNumber, null, out byte n)) return false;
-                else if (n < 32 && n != 0) return false;
-            }
-            return true;
         }
 
         private void ToolStripTextBox1_Leave(object sender, EventArgs e)
