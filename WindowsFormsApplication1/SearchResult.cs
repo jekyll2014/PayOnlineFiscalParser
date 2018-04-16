@@ -112,7 +112,6 @@ public class ParseEscPos
         else return false;
 
         //select data frame
-        commandFrameLength = 0;
         commandFrameLength = sourceData[_pos];
         _pos++;
 
