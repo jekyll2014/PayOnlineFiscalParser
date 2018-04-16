@@ -288,6 +288,7 @@ namespace WindowsFormsApplication1
                 else if (Accessory.PrintableHex(asciiString.ToString())) saveStr.Append("ASCII string: \"" + Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage).GetString(Accessory.ConvertHexToByteArray(asciiString.ToString())) + "\"\r\n");
                 saveStr.Append("\r\n");
                 File.AppendAllText(SourceFile + ".list", asciiString.ToString() + "\r\n", Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage));
+                File.AppendAllText(SourceFile + ".escpos", saveStr.ToString(), Encoding.GetEncoding(PayOnlineFiscalParser.Properties.Settings.Default.CodePage));
                 asciiString.Clear();
             }
 
