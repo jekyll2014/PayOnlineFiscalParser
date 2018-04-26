@@ -211,7 +211,7 @@ public class ParseEscPos
             }
 
             //substitute parameters if needed (@-sign)
-            if (commandParamSizeDefined[parameter].StartsWith("@"))
+            if (commandParamSizeDefined[parameter].StartsWith("%"))
             {
                 int v = -1;
                 int.TryParse(commandParamSizeDefined[parameter].Substring(1), out v);
