@@ -435,6 +435,7 @@ namespace WindowsFormsApplication1
                 textBox_code.Text = Accessory.ConvertByteArrayToHex(sourceData.ToArray());
                 textBox_code.Select(0, 0);
                 //ParseEscPos.Init(textBox_code.Text, CommandDatabase);
+                ParseEscPos.sourceData.Clear();
                 ParseEscPos.sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
             }
             else if (openFileDialog.Title == "Open HEX file") //hex text read
@@ -453,6 +454,7 @@ namespace WindowsFormsApplication1
                 sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
                 textBox_code.Select(0, 0);
                 //ParseEscPos.Init(textBox_code.Text, CommandDatabase);
+                ParseEscPos.sourceData.Clear();
                 ParseEscPos.sourceData.AddRange(Accessory.ConvertHexToByteArray(textBox_code.Text));
             }
             else if (openFileDialog.Title == "Open command CSV database") //hex text read
