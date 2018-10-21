@@ -511,5 +511,6 @@ namespace WindowsFormsApplication1
                 PayOnlineFiscalParser.Properties.Settings.Default.Save();
             }
         }
+
     }
 }

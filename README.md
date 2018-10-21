@@ -1,5 +1,5 @@
 # PayOnlineFiscalParser
-PayKiosk Fiscal controller command parser (for RUSSIA)
+PayKiosk/SHTRIKH Fiscal controller command parser (for RUSSIA)
 
 Can decode commands and replies to/from PayKiosk fiscal controllers made for RUSSIA (for example PAYONLINE-01-FA).
 Command and errors databases are stored into .CSV files.

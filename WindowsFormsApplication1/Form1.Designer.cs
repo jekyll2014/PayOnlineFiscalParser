@@ -95,7 +95,7 @@
             this.textBox_code.Name = "textBox_code";
             this.textBox_code.ReadOnly = true;
             this.textBox_code.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_code.Size = new System.Drawing.Size(239, 255);
+            this.textBox_code.Size = new System.Drawing.Size(237, 253);
             this.textBox_code.TabIndex = 0;
             this.textBox_code.Text = resources.GetString("textBox_code.Text");
             this.textBox_code.Leave += new System.EventHandler(this.TextBox_code_Leave);
@@ -125,7 +125,7 @@
             this.dataGridView_commands.ReadOnly = true;
             this.dataGridView_commands.RowHeadersVisible = false;
             this.dataGridView_commands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView_commands.Size = new System.Drawing.Size(792, 288);
+            this.dataGridView_commands.Size = new System.Drawing.Size(788, 284);
             this.dataGridView_commands.TabIndex = 2;
             // 
             // dataGridView_result
@@ -144,7 +144,7 @@
             this.dataGridView_result.ReadOnly = true;
             this.dataGridView_result.RowHeadersVisible = false;
             this.dataGridView_result.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView_result.Size = new System.Drawing.Size(545, 133);
+            this.dataGridView_result.Size = new System.Drawing.Size(543, 131);
             this.dataGridView_result.TabIndex = 3;
             // 
             // button_auto
@@ -210,7 +210,7 @@
             this.textBox_commandDesc.Name = "textBox_commandDesc";
             this.textBox_commandDesc.ReadOnly = true;
             this.textBox_commandDesc.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_commandDesc.Size = new System.Drawing.Size(348, 100);
+            this.textBox_commandDesc.Size = new System.Drawing.Size(346, 96);
             this.textBox_commandDesc.TabIndex = 14;
             this.textBox_commandDesc.TabStop = false;
             // 
@@ -362,7 +362,7 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
@@ -380,6 +380,7 @@
             // 
             // splitContainer3
             // 
+            this.splitContainer3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer3.Location = new System.Drawing.Point(0, 0);
             this.splitContainer3.Name = "splitContainer3";
@@ -392,12 +393,13 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.dataGridView_result);
-            this.splitContainer3.Size = new System.Drawing.Size(545, 255);
+            this.splitContainer3.Size = new System.Drawing.Size(547, 257);
             this.splitContainer3.SplitterDistance = 118;
             this.splitContainer3.TabIndex = 17;
             // 
             // splitContainer4
             // 
+            this.splitContainer4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer4.Location = new System.Drawing.Point(0, 0);
             this.splitContainer4.Name = "splitContainer4";
@@ -411,7 +413,7 @@
             // 
             this.splitContainer4.Panel2.Controls.Add(this.label_commandDesc);
             this.splitContainer4.Panel2.Controls.Add(this.textBox_commandDesc);
-            this.splitContainer4.Size = new System.Drawing.Size(545, 118);
+            this.splitContainer4.Size = new System.Drawing.Size(547, 118);
             this.splitContainer4.SplitterDistance = 187;
             this.splitContainer4.TabIndex = 0;
             // 
@@ -423,11 +425,12 @@
             this.textBox_command.Location = new System.Drawing.Point(3, 16);
             this.textBox_command.Multiline = true;
             this.textBox_command.Name = "textBox_command";
-            this.textBox_command.Size = new System.Drawing.Size(181, 99);
+            this.textBox_command.Size = new System.Drawing.Size(177, 95);
             this.textBox_command.TabIndex = 16;
             // 
             // splitContainer2
             // 
+            this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(0, 24);
             this.splitContainer2.Name = "splitContainer2";
