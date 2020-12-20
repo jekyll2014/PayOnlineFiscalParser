@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace PayOnlineFiscalParser
 {
     partial class Form1
     {
